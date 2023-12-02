@@ -1,0 +1,23 @@
+<div class="col-md-8">
+  <%= form_for(@post || Post.new) do |form| %>
+    <% if @post.present? && @post.errors.any? %>
+      <div class="alert alert-danger" role="alert">
+        <% @post.errors.full_messages.each do |message| %>
+          <%= message %><br>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= form.label :title, "Заголовок" %>
+      <%= form.text_field :title, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= form.label :body, "Текст" %>
+      <%= form.text_area :body, class: "form-control", rows: "10" %>
+    </div>
+
+    <p></p>
+    <%= form.submit (action == "edit" ? "Сохранить" : "Создать"), class: "btn btn-primary" %>
+  <% end %>
+</div>
