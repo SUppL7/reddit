@@ -31,10 +31,23 @@
           <a class="nav-link disabled" aria-disabled="true">Disabled</a>
         </li-->
       </ul>
-      <div>
+      <% if user_signed_in? %>
+        <!-- Код для зарегистрированного пользователя -->
+        <a class="btn btn-primary" <%= link_to 'Выйти', destroy_user_session_path, method: :delete  %></a>
+      <% else %>
+
         <a href="/users/sign_in" class="btn btn-primary" >Войти</a>
         <a href="/users/sign_up" class="btn btn-dark">Регистрация</a>
-      </div>
+
+        <!-- Код для неавторизованного пользователя -->
+        <!-- %= link_to 'Вход', new_user_session_path % -->
+        <!-- %= link_to 'Регистрация', new_user_registration_path % -->
+      <% end %>
+
+      <!-- div>
+        <a href="/users/sign_in" class="btn btn-primary" >Войти</a>
+        <a href="/users/sign_up" class="btn btn-dark">Регистрация</a>
+      </div -->
     </div>
   </div>
 </nav>
