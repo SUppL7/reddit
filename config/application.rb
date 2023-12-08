@@ -11,6 +11,14 @@ module Reddit
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
     config.autoload_paths << "#{Rails.root}/lib"
+    # Автозагрузка всех языковых файлов
+
+    config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
+    # Дефолтовый язык
+    config.i18n.default_locale = :ru
+
+    # Возврат к английскому при ошибках
+    config.i18n.fallbacks = {'ru' => 'en'}
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

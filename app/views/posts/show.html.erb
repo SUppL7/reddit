@@ -1,4 +1,8 @@
 <!-- Post Content Column -->
+<%= javascript_include_tag "application" %>
+<%= javascript_include_tag  "turbo" ,type: "module" %>
+<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
 <div class="col-lg-8">
 
   <!-- Title -->
@@ -17,10 +21,29 @@
   <hr>
 
   <!-- Post Content -->
-  <p><%= @post.created_at %></p>  <hr>
+  <p><%= "Пост создан " + I18n.l(@post.created_at.to_time, :format => '%d %B %Y') %></p>
+  <hr>
 
 
-  <!-- Comments Form -->
-  <%= react_component("CommentsApp", { comments: @comments, replies: @replies, csrf_token: form_authenticity_token, post_id: @post.id }) %>
+  <!-- Форма для создания комментария -->
+  <%= commontator_thread(@post) %>
+
+  <%= render partial: 'commontator/shared/threads/form', locals: { thread: @post.commontator_thread } %>
+
+
+
+
+
+
+  <!-- Отображение существующих комментариев -->
+  <%= render 'commontator/shared/thread', commontable: @post %>
+
+
+
+  <p>
+    <% if current_user == @post.user %>
+      <%= link_to "Удалить пост", post_path(@post), data: { turbo: true, turbo_method: :delete }, class: 'btn btn-danger' %>
+    <% end %>
+  </p>
 
 </div>

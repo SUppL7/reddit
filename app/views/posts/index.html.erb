@@ -15,11 +15,16 @@
     <div class="card mb-4">
       <div class="card-body">
         <h2 class="card-title"><%= post.title %></h2>
-        <p class="card-text"><%= post.body.length <= 2000 ? post.body : post.body[0..2000] %></p>
+        <p class="card-text"><%= post.body.length <= 2000 ? post.body : post.body[0..200] %></p>
         <a href="/posts/<%= post.id %>" class="btn btn-primary">Читать дальше &rarr;</a>
+          <br>
+
       </div>
       <div class="card-footer text-muted">
-        <%= post.created_at %>
+
+        <p><%= I18n.l(post.created_at.to_time, :format => '%d %B %Y') %></p>
+
+        <p><%= "Создано: " + post.user.try(:username).to_s %></p>
       </div>
     </div>
   <% end %>
@@ -33,5 +38,6 @@
       <a class="page-link" href="/posts/<% if @topic.present? %><%= @topic.alias %><% end %>?older=<%= @page_token %>">Более старые &rarr;</a>
     </li>
   </ul>
+
 
 </div>
