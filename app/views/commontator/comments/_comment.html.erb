@@ -1,0 +1,18 @@
+<!-- app/views/commontator/comments/_comment.html.erb -->
+
+<div class="comment">
+  <p><strong><%= comment.creator.username %>:</strong> <%= comment.body %></p>
+
+  <!-- Отображение формы ответа -->
+  <%= form_with(model: Commontator::Comment.new, url: reply_to_comment_path(comment), method: :post) do |form| %>
+    <%= form.hidden_field :commontator_thread_id, value: comment.thread.id %>
+    <%= form.hidden_field :parent_comment_id, value: comment.id %>
+    <%= form.text_area :body, placeholder: 'Напишите ответ на комментарий' %>
+    <%= form.submit 'Отправить ответ' %>
+  <% end %>
+
+  <!-- Рекурсивное отображение ответов -->
+  <% comment.replies.each do |reply| %>
+    <%= render 'comment', comment: reply %>
+  <% end %>
+</div>

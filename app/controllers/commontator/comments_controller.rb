@@ -151,6 +151,13 @@ class Commontator::CommentsController < Commontator::ApplicationController
     end
   end
 
+
+  def show
+    # Найти комментарий на основе параметра :id
+    @comment = Comment.find(params[:id])
+    # Ваш остальной код
+  end
+
   # PUT /comments/1/unvote
   def unvote
     security_transgression_unless @comment.can_be_voted_on_by?(@commontator_user)

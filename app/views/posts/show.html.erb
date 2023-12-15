@@ -2,6 +2,19 @@
 <%= javascript_include_tag "application" %>
 <%= javascript_include_tag  "turbo" ,type: "module" %>
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+<!-- Ваш HTML-код для страницы с комментариями -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".reply-button").on("click", function(e) {
+            e.preventDefault();
+            var commentId = $(this).data('comment-id');
+            $(".reply-form[data-comment-id='" + commentId + "']").toggle();
+        });
+    });
+</script>
+
 
 <div class="col-lg-8">
 
@@ -24,11 +37,17 @@
   <p><%= "Пост создан " + I18n.l(@post.created_at.to_time, :format => '%d %B %Y') %></p>
   <hr>
 
-
+  <p>
+    <% if current_user == @post.user %>
+      <%= link_to "Удалить пост", post_path(@post), data: { turbo: true, turbo_method: :delete }, class: 'btn btn-danger' %>
+    <% end %>
+  </p>
   <!-- Форма для создания комментария -->
-  <%= commontator_thread(@post) %>
 
-  <%= render partial: 'commontator/shared/threads/form', locals: { thread: @post.commontator_thread } %>
+
+
+
+
 
 
 
@@ -36,14 +55,30 @@
 
 
   <!-- Отображение существующих комментариев -->
-  <%= render 'commontator/shared/thread', commontable: @post %>
 
 
 
-  <p>
-    <% if current_user == @post.user %>
-      <%= link_to "Удалить пост", post_path(@post), data: { turbo: true, turbo_method: :delete }, class: 'btn btn-danger' %>
+
+
+
+
+  <!-- Отображение существующих комментариев -->
+
+
+  <h2>Комментарии:</h2>
+  <% @comments.each do |comment| %>
+    <p><strong><%= comment.creator.username %>:</strong> <%= comment.body %></p>
+    <%= form_with(model: Commontator::Comment.new, url: reply_to_comment_path(comment), method: :post) do |form| %>
+      <%= form.hidden_field :commontator_thread_id, value: comment.thread.id %>
+      <%= form.hidden_field :parent_id, value: comment.id %>
     <% end %>
-  </p>
+  <% end %>
+
+  <%= form_with(model: Commontator::Comment.new, url: commontator.thread_comments_path(@post.commontator_thread)) do |form| %>
+    <%= form.hidden_field :commontator_thread_id, value: @post.commontator_thread.id %>
+    <%= form.text_area :body, placeholder: 'Напишите комментарий' %>
+    <%= form.submit 'Отправить комментарий' %>
+  <% end %>
+
 
 </div>

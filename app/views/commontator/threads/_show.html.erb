@@ -17,6 +17,14 @@
               id: "commontator-thread-#{thread.id}-show-link" %>
 </div>
 
+
+
+<% @commontator_thread.comments.where(parent_comment_id: nil).each do |comment| %>
+  <%= render 'comment', comment: comment %>
+<% end %>
+
+
+
 <div id="commontator-thread-<%= thread.id %>-content" class="content">
   <div id="commontator-thread-<%= thread.id %>-header" class="header">
     <span id="commontator-thread-<%= thread.id %>-actions" class="actions">

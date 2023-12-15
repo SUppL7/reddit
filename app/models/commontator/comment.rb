@@ -133,4 +133,13 @@ class Commontator::Comment < ActiveRecord::Base
     errors.add :parent, 'must belong to the same thread'
     throw :abort
   end
+  # app/models/commontator/comment.rb
+
+  module Commontator
+    class Comment < ActiveRecord::Base
+      belongs_to :parent_comment, class_name: 'Commontator::Comment', optional: true
+      has_many :replies, class_name: 'Commontator::Comment', foreign_key: 'parent_comment_id', dependent: :destroy
+    end
+  end
+
 end

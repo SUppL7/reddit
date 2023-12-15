@@ -7,4 +7,7 @@ Rails.application.routes.draw do
 
   mount Commontator::Engine => '/commontator'
 
+  post '/comments/:id/reply', to: 'comments#reply', as: 'reply_to_comment'
+
+
 end
