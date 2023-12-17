@@ -3,11 +3,7 @@ Rails.application.routes.draw do
 
   root 'posts#index'
 
-  resources :posts
-
-  mount Commontator::Engine => '/commontator'
-
-  post '/comments/:id/reply', to: 'comments#reply', as: 'reply_to_comment'
-
-
+  resources :posts do
+    resources :comments, only: [:create]
+  end
 end
