@@ -1,5 +1,4 @@
 class ChangeComments < ActiveRecord::Migration[7.0]
-  drop_table :comments
 
   def change
     create_table :comments do |t|
