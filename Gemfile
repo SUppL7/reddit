@@ -1,3 +1,4 @@
+
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -5,14 +6,7 @@ ruby "3.2.2"
 
 gem "devise"
 
-gem "rails-i18n"
-
-
-gem 'jquery-rails'
-gem 'sassc-rails'
-
 gem 'react-rails'
-gem "webpacker"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.8"
@@ -39,7 +33,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.0"
+# gem "redis", "~> 4.0"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -62,7 +56,6 @@ gem "bootsnap", require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
-  gem 'commontator', '~> 7.0', '>= 7.0.1'
 end
 
 group :development do
@@ -82,3 +75,4 @@ group :test do
   gem "selenium-webdriver"
 
 end
+
