@@ -7,6 +7,7 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
+    @comments = @post.comments
   end
 
   def edit
@@ -22,9 +23,8 @@ class PostsController < ApplicationController
       render "edit"
     end
   end
-
-
   def new
+    @post = current_user.posts.build
   end
 
   def create
@@ -62,3 +62,4 @@ class PostsController < ApplicationController
     @page_token = pagination.construct_page_token
   end
 end
+

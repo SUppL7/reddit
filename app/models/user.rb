@@ -4,10 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  acts_as_commontator
-
   has_many :posts
-  #has_many :comments
+  has_many :comments
 
   validates :username, length: {in: 3..15}, uniqueness: true
   validates :email, uniqueness: true
