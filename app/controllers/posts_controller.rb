@@ -29,11 +29,22 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
+    @post.user = current_user
 
     if @post.save
       redirect_to @post
     else
       render "new"
+    end
+  end
+
+
+  def destroy
+    @post = Post.find(params[:id])
+    if @post.destroy
+      redirect_to root_path # Перенаправление куда угодно после удаления
+    else
+      redirect_to @post # Можно перенаправить обратно к посту при ошибке
     end
   end
 

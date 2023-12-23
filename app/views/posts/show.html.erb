@@ -1,57 +1,69 @@
+<!-- Post Content Column -->
 <%= javascript_include_tag "application" %>
-<%= javascript_include_tag "turbo", type: "module" %>
+<%= javascript_include_tag  "turbo" ,type: "module" %>
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
 <div class="col-lg-8">
+  <!-- Title -->
   <h1 class="mt-4"><%= @post.title %></h1>
+
+  <!-- Author -->
   <p class="lead"></p>
+
   <hr>
+
+  <!-- Date/Time -->
   <%= @post.body %>
   <hr>
+
+  <!-- Post Content -->
   <p><%= "Пост создан " + I18n.l(@post.created_at.to_time, :format => '%d %B %Y') %></p>
   <hr>
+
+
+  <!-- Отображение существующих комментариев -->
   <h2>Комментарии:</h2>
-
   <% @comments.each do |comment| %>
-    <div class="comment-container">
-      <div class="comment">
-        <p><strong><%= comment.user&.username %>:</strong> <%= comment.body %></p>
-        <% if comment.can_be_deleted_by?(current_user) %>
-          <%= link_to post_comment_path(@post, comment), method: :delete, data: { id: comment.id, turbo: true, turbo_method: :delete }, remote: true do %>
-            Удалить
-          <% end %>
-        <% end %>
-
-        <% if current_user.present? %>
-          <%= form_with(model: Comment.new, url: post_comments_path(@post)) do |form| %>
-            <%= form.text_area :body, placeholder: 'Ответить на комментарий' %>
-            <%= form.hidden_field :parent_id, value: comment.id %>
-            <%= form.submit 'Ответить на комментарий' %>
-          <% end %>
-        <% end %>
-
-        <% comment.replies.each do |reply| %>
-          <div class="reply">
-            <p><strong><%= reply.user&.username %>:</strong> <%= reply.body %></p>
-            <% if reply.can_be_deleted_by?(current_user) %>
-              <%= link_to post_comment_path(@post, reply), method: :delete, data: { id: reply.id, turbo: true, turbo_method: :delete }, remote: true do %>
-                Удалить ответ
-              <% end %>
+    <% unless comment.parent_id.present? %>
+      <div class="comment-container">
+        <div class="comment">
+          <strong><%= comment.user.username %>:</strong> <%= comment.body %>
+          <% if comment.can_be_deleted_by?(current_user) %>
+            <%= link_to post_comment_path(@post, comment), method: :delete, data: { id: comment.id, turbo: true, turbo_method: :delete }, remote: true do %>
+              Удалить
             <% end %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
+          <% end %>
 
-  <!-- Форма для общего комментария -->
-  <% if current_user.present? %>
-    <%= form_with(model: Comment.new, url: post_comments_path(@post)) do |form| %>
-      <%= form.text_area :body, placeholder: 'Напишите комментарий' %>
-      <%= form.submit 'Отправить комментарий' %>
+          <!-- Форма для ответа на текущий комментарий -->
+          <%= form_with(model: Comment.new, url: post_comments_path(@post)) do |form| %>
+            <% if comment.replies.empty? %>
+              <%= form.text_area :body, placeholder: 'Ответить на комментарий' %>
+              <%= form.hidden_field :parent_id, value: comment.id %>
+              <%= form.submit 'Ответить на комментарий' %>
+            <% end %>
+          <% end %>
+
+          <!-- Отображение ответов на текущий комментарий -->
+          <% comment.replies.each do |reply| %>
+            <div class="reply">
+              <strong><%= reply.user.username %>:</strong> <%= reply.body %>
+              <% if reply.can_be_deleted_by?(current_user) %>
+                <%= link_to "Удалить ответ", post_comment_path(@post, reply), method: :delete, data: { id: reply.id, turbo: true, turbo_method: :delete }, remote: true %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     <% end %>
   <% end %>
+  <!-- Форма для создания комментария -->
+  <br>
+  <%= form_with(model: Comment.new, url: post_comments_path(@post)) do |form| %>
+    <%= form.text_area :body, placeholder: 'Напишите комментарий' %>
+    <%= form.submit 'Отправить комментарий' %>
+  <% end %>
 
+  <br>
   <p>
     <% if current_user == @post.user %>
       <%= link_to "Удалить пост", post_path(@post), data: { turbo: true, turbo_method: :delete }, class: 'btn btn-danger' %>
