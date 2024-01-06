@@ -7,6 +7,7 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
+    @comments = @post.comments
   end
 
   def edit
@@ -22,18 +23,28 @@ class PostsController < ApplicationController
       render "edit"
     end
   end
-
-
   def new
+    @post = current_user.posts.build
   end
 
   def create
     @post = Post.new(post_params)
+    @post.user = current_user
 
     if @post.save
       redirect_to @post
     else
       render "new"
+    end
+  end
+
+
+  def destroy
+    @post = Post.find(params[:id])
+    if @post.destroy
+      redirect_to root_path # Перенаправление куда угодно после удаления
+    else
+      redirect_to @post # Можно перенаправить обратно к посту при ошибке
     end
   end
 
@@ -62,3 +73,4 @@ class PostsController < ApplicationController
     @page_token = pagination.construct_page_token
   end
 end
+

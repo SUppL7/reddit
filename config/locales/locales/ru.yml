@@ -2,38 +2,26 @@
 ru:
   activerecord:
     attributes:
-      commontator/comment:
-        body: Комментарий
-        creator: Создал
-        editor: Редактировал
-        thread: Обсуждение
-        parent: Родительский Комментарий
-      commontator/subscription:
-        subscriber: Подписчик
-        thread: Обсуждение
-      commontator/thread:
-        commontable: Комментируем
+      comment:
+        body: "Комментарий"
+      post:
+        title: "Заголовок"
+        body: "Содержание"
     errors:
       models:
-        commontator/comment:
+        comment:
           attributes:
             body:
-              double_posted: этот комментарий уже есть.
+              blank: "не может быть пустым"
+        post:
+          attributes:
+            title:
+              blank: "не может быть пустым"
+            body:
+              blank: "не может быть пустым"
+
+
     models:
-      commontator/comment:
-        one: комментарий
-        many: комментарии
-        other: комментарии
-      commontator/subscription:
-        one: подписка
-        many: подписки
-        other: подписки
-      commontator/thread:
-        one: обсуждение
-        many: обсуждения
-        other: обсуждения
-  commontator:
-    anonymous: Аноним
     comment:
       actions:
         cancel: Отменить

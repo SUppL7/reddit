@@ -1,1 +1,11 @@
 <%= render partial: "form", locals: { path: posts_path, action: "new" } %>
+
+<% if @post.errors.any? %>
+  <div id="error_explanation">
+    <ul>
+      <% @post.errors.full_messages.each do |message| %>
+
+      <% end %>
+    </ul>
+  </div>
+<% end %>

@@ -39,9 +39,9 @@
       </ul>
       <% if user_signed_in? %>
         <!-- Код для зарегистрированного пользователя -->
-        <a href="/posts/new" class="btn btn-primary">Создать пост </a >
+        <a href="/posts/new" class="btn btn-primary" style="margin-right: 10px;">Создать пост </a >
 
-        <%= link_to("Выход", destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: 'btn btn-primary') %>
+        <%= link_to("Выход", destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: 'btn btn-danger ') %>
 
 
 

@@ -1,228 +1,62 @@
-  <h2>Комментарии:</h2>
-  <%= form_with(model: Commontator::Comment.new, url: commontator.thread_comments_path(@post.commontator_thread)) do |form| %>
-    <%= form.hidden_field :commontator_thread_id, value: @post.commontator_thread.id %>
-    <%= form.text_area :body, placeholder: 'Напишите комментарий' %>
-    <%= form.submit 'Отправить комментарий' %>
-  <% end %>
-
-
-
-  <!-- Отображение существующих комментариев -->
-
-
-
-  <% @comments.each do |comment| %>
-    <p><strong><%= comment.creator.username %>:</strong> <%= comment.body %></p>
-    <%= form_with(model: Commontator::Comment.new, url: reply_to_comment_path(comment), method: :post) do |form| %>
-      <%= form.hidden_field :commontator_thread_id, value: comment.thread.id %>
-      <%= form.hidden_field :parent_id, value: comment.id %>
-      <%= form.text_area :body, placeholder: 'Напишите ответ на комментарий' %>
-      <%= form.submit 'Отправить ответ' %>
-    <% end %>
-  <% end %>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---------------------------------------------------------------------
-
-
-<%
-  # Controllers that use this partial must supply the following variables:
-  # user
-  # comment
-  # nested_children or page
-  # show_all
-
-  thread = comment.thread
-  nested_children ||= begin
-    children = thread.paginated_comments(page, comment.id, show_all)
-    thread.nested_comments_for(user, children, show_all)
-  end
-
-  creator = comment.creator
-  link = Commontator.commontator_link(creator, main_app)
-  name = Commontator.commontator_name(creator) || ''
-%>
-
-<div id="commontator-comment-<%= comment.id %>-section-top" class="section top">
-  <span id="commontator-comment-<%= comment.id %>-author" class="author">
-    <%= link.blank? ? name : link_to(name, link) %>
-  </span>
-
-  <span id="commontator-comment-<%= comment.id %>-actions" class="actions">
-    <%=
-      link_to(
-        t('commontator.comment.actions.edit'),
-        commontator.edit_comment_path(comment),
-        id: "commontator-comment-#{comment.id}-edit",
-        class: 'edit',
-        remote: true
-      ) if comment.can_be_edited_by?(user)
-    %>
-
-    <% if comment.can_be_deleted_by?(user) %>
-      <% is_deleted = comment.is_deleted? %>
-      <% del_string = is_deleted ? 'undelete' : 'delete' %>
-      <%= link_to t("commontator.comment.actions.#{del_string}"),
-                  commontator.polymorphic_path([del_string.to_sym, comment]),
-                  data: is_deleted ? {} : { confirm: t('commontator.comment.actions.confirm_delete') },
-                  method: :put,
-                  id: "commontator-comment-#{comment.id}-#{del_string}",
-                  class: del_string,
-                  remote: true %>
-    <% end %>
-  </span>
-</div>
-
-<div id="commontator-comment-<%= comment.id %>-section-middle" class="section middle">
-  <span id="commontator-comment-<%= comment.id %>-avatar" class="avatar">
-    <%= Commontator.commontator_avatar(creator, self) %>
-  </span>
-
-  <span id="commontator-comment-<%= comment.id %>-votes" class="votes">
-    <%= render partial: 'commontator/comments/votes', locals: { comment: comment, user: user } %>
-  </span>
-
-  <div id="commontator-comment-<%= comment.id %>-body" class="body">
-    <%= render partial: 'commontator/comments/body', locals: { comment: comment } %>
-  </div>
-</div>
-
-<div id="commontator-comment-<%= comment.id %>-section-bottom" class="section bottom">
-  <% unless comment.is_deleted? %>
-    <span id="commontator-comment-<%= comment.id %>-reply-link" class="reply">
-      <%=
-        link_to(
-          t('commontator.comment.actions.reply'),
-          commontator.new_thread_comment_path(thread, comment: { parent_id: comment.id }),
-          remote: true
-        ) if thread.config.comment_reply_style != :n && !thread.is_closed?
-      %>
-    </span>
-  <% end %>
-
-  <span id="commontator-comment-<%= comment.id %>-created-timestamp" class="timestamp">
-    <%= comment.created_timestamp %>
-  </span>
-
-  <span id="commontator-comment-<%= comment.id %>-updated-timestamp" class="timestamp">
-    <%= comment.updated_timestamp if comment.is_modified? %>
-  </span>
-</div>
-
-<div id="commontator-comment-<%= comment.id %>-children" class="children">
-  <% if thread.config.comment_order == :l %>
-    <div id="commontator-comment-<%= comment.id %>-reply" class="reply"></div>
-  <% end %>
-
-  <%= render partial: 'commontator/comments/list',
-             locals: { user: user, nested_comments: nested_children } %>
-
-  <% if thread.config.comment_order != :l %>
-    <div id="commontator-comment-<%= comment.id %>-reply" class="reply"></div>
-  <% end %>
-</div>
-
-<div id="commontator-comment-<%= comment.id %>-pagination" class="pagination">
-  <div id="commontator-comment-<%= comment.id %>-will-paginate" class="will-paginate">
-    <%= will_paginate nested_children,
-                      renderer: Commontator::LinkRenderer,
-                      name: t('commontator.comment.status.reply_pages'),
-                      remote: true,
-                      params: { controller: 'commontator/comments',
-                                action: 'show',
-                                id: comment.id } %>
-  </div>
-</div>
-
----------------------------------
-
 <%= javascript_include_tag "application" %>
 <%= javascript_include_tag "turbo", type: "module" %>
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    $(".reply-button").on("click", function(e) {
-      e.preventDefault();
-      var commentId = $(this).data('comment-id');
-      $(".reply-form[data-comment-id='" + commentId + "']").toggle();
-    });
-  });
-</script>
-
 <div class="col-lg-8">
-  <!-- Ваш код -->
-
+  <h1 class="mt-4"><%= @post.title %></h1>
+  <p class="lead"></p>
+  <hr>
+  <%= @post.body %>
+  <hr>
+  <p><%= "Пост создан " + I18n.l(@post.created_at.to_time, :format => '%d %B %Y') %></p>
+  <hr>
   <h2>Комментарии:</h2>
 
   <% @comments.each do |comment| %>
-    <div class="comment">
-      <% if comment.creator.present? %>
-        <p><strong><%= comment.creator.username %>:</strong> <%= comment.body %></p>
-        <%= link_to "Ответить", "#", class: "reply-button", data: { comment_id: comment.id } %>
-        <div class="reply-form" style="display: none;" data-comment-id="<%= comment.id %>">
-          <%= form_with(model: Commontator::Comment.new, url: reply_to_comment_path(comment), method: :post) do |form| %>
-            <%= form.hidden_field :commontator_thread_id, value: comment.thread.id %>
-            <%= form.hidden_field :parent_id, value: comment.id %>
-            <%= form.text_area :body, placeholder: 'Напишите ответ на комментарий' %>
-            <%= form.submit 'Отправить ответ' %>
+    <div class="comment-container">
+      <div class="comment">
+        <% unless comment.parent_id.present? %>
+        <p><strong><%= comment.user&.username %>:</strong> <%= comment.body %></p>
+        <% if comment.can_be_deleted_by?(current_user) %>
+          <%= link_to post_comment_path(@post, comment), method: :delete, data: { id: comment.id, turbo: true, turbo_method: :delete }, remote: true do %>
+            Удалить
           <% end %>
-        </div>
+        <% end %>
+        <% end %>
 
-        <% if comment.children.any? %>
-          <div class="children-comments">
-            <%= render partial: 'comments', locals: { comment_tree: comment.children } %>
+        <% if current_user.present? %>
+          <%= form_with(model: Comment.new, url: post_comments_path(@post)) do |form| %>
+            <%= form.text_area :body, placeholder: 'Ответить на комментарий' %>
+            <%= form.hidden_field :parent_id, value: comment.id %>
+            <%= form.submit 'Ответить на комментарий' %>
+          <% end %>
+        <% end %>
+
+        <% comment.replies.each do |reply| %>
+          <div class="reply">
+            <p><strong><%= reply.user&.username %>:</strong> <%= reply.body %></p>
+            <% if reply.can_be_deleted_by?(current_user) %>
+              <%= link_to post_comment_path(@post, reply), method: :delete, data: { id: reply.id, turbo: true, turbo_method: :delete }, remote: true do %>
+                Удалить ответ
+              <% end %>
+            <% end %>
           </div>
         <% end %>
-      <% else %>
-        <p>This comment has no creator</p>
-      <% end %>
+      </div>
     </div>
   <% end %>
 
-  <!-- Остальной ваш код -->
-
-</div>
-
-<%# Ваш код с render_comments теперь превращен в частичное представление 'comments' %>
-<%# app/views/название_папки_частичных_представлений/_comments.html.erb %>
-<%# Данная часть кода будет размещена в файле comments.html.erb %>
-
-<%# _comments.html.erb %>
-<% comment_tree.each do |comment_id, comment| %>
-  <div class="comment">
-    <% if comment.creator.present? %>
-      <p><strong><%= comment.creator.username %>:</strong> <%= comment.body %></p>
-      <%= link_to "Ответить", "#", class: "reply-button", data: { comment_id: comment.id } %>
-      <div class="reply-form" style="display: none;" data-comment-id="<%= comment.id %>">
-        <%= form_with(model: Commontator::Comment.new, url: reply_to_comment_path(comment), method: :post) do |form| %>
-          <%= form.hidden_field :commontator_thread_id, value: comment.thread.id %>
-          <%= form.hidden_field :parent_id, value: comment.id %>
-          <%= form.text_area :body, placeholder: 'Напишите ответ на комментарий' %>
-          <%= form.submit 'Отправить ответ' %>
-        <% end %>
-      </div>
-
-      <% if comment.children.any? %>
-        <div class="children-comments">
-          <%= render partial: 'comments', locals: { comment_tree: comment.children } %>
-        </div>
-      <% end %>
-    <% else %>
-      <p>This comment has no creator</p>
+  <!-- Форма для общего комментария -->
+  <% if current_user.present? %>
+    <%= form_with(model: Comment.new, url: post_comments_path(@post)) do |form| %>
+      <%= form.text_area :body, placeholder: 'Напишите комментарий' %>
+      <%= form.submit 'Отправить комментарий' %>
     <% end %>
-  </div>
-<% end %>
+  <% end %>
+
+  <p>
+    <% if current_user == @post.user %>
+      <%= link_to "Удалить пост", post_path(@post), data: { turbo: true, turbo_method: :delete }, class: 'btn btn-danger' %>
+    <% end %>
+  </p>
+</div>
