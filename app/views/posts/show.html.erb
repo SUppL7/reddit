@@ -1,27 +1,33 @@
-<!-- Post Content Column -->
+
 <%= javascript_include_tag "application" %>
 <%= javascript_include_tag  "turbo" ,type: "module" %>
 <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
+
+
 <div class="col-lg-8">
-  <!-- Title -->
-  <h1 class="mt-4"><%= @post.title %></h1>
 
-  <!-- Author -->
-  <p class="lead"></p>
+  <div class="title">
+    <h1 class="mt-4" style= "font-size: 24px; font-weight: bold; max-width: 1000px; margin-bottom: 10px; overflow-wrap: break-word;">
+      <%= @post.title %>
+    </h1>
+  </div>
 
   <hr>
 
-  <!-- Date/Time -->
-  <%= @post.body %>
+  <div class="body" style="max-width: 1000px; overflow-wrap: break-word;">
+    <%= @post.body %>
+  </div>
+
   <hr>
 
-  <!-- Post Content -->
-  <p><%= "Пост создан " + I18n.l(@post.created_at.to_time, :format => '%d %B %Y') %></p>
+
+  <div class="time">
+    <p><%= "Пост создан " + I18n.l(@post.created_at.to_time, :format => '%d %B %Y') %></p>
+  </div>
   <hr>
 
 
-  <!-- Отображение существующих комментариев -->
   <h2>Комментарии:</h2>
   <% @comments.each do |comment| %>
     <% unless comment.parent_id.present? %>
