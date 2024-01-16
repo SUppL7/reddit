@@ -15,23 +15,28 @@
  */
 
 .title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    max-width: 800px;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 24px;
+    overflow-wrap: break-word;
+}
+
+
+.body {
+    font-family: Noto Sans,Arial,sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 22px;
+    overflow: auto;
+    padding-bottom: 1px;
+    margin-bottom: -1px;
+    overflow-wrap: break-word;
 }
 
 .time {
-    color: #888;
+    color: #020202;
     font-size: 14px;
     margin-bottom: 10px;
-    max-width: 800px;
-}
-
-.body {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 20px;
     max-width: 800px;
 }
 
@@ -47,4 +52,3 @@
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
 }
-
