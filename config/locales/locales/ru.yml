@@ -2,38 +2,26 @@
 ru:
   activerecord:
     attributes:
-      commontator/comment:
-        body: Комментарий
-        creator: Создал
-        editor: Редактировал
-        thread: Обсуждение
-        parent: Родительский Комментарий
-      commontator/subscription:
-        subscriber: Подписчик
-        thread: Обсуждение
-      commontator/thread:
-        commontable: Комментируем
+      comment:
+        body: "Комментарий"
+      post:
+        title: "Заголовок"
+        body: "Содержание"
     errors:
       models:
-        commontator/comment:
+        comment:
           attributes:
             body:
-              double_posted: этот комментарий уже есть.
+              blank: "не может быть пустым"
+        post:
+          attributes:
+            title:
+              blank: "не может быть пустым"
+            body:
+              blank: "не может быть пустым"
+
+
     models:
-      commontator/comment:
-        one: комментарий
-        many: комментарии
-        other: комментарии
-      commontator/subscription:
-        one: подписка
-        many: подписки
-        other: подписки
-      commontator/thread:
-        one: обсуждение
-        many: обсуждения
-        other: обсуждения
-  commontator:
-    anonymous: Аноним
     comment:
       actions:
         cancel: Отменить
@@ -86,6 +74,16 @@ ru:
         closed: Комментарии (Закрыты %{closer_name})
         open: Комментарии
         pages: "Страницы комментариев:"
+  date:
+    month_names: [ ~, Январь, Февраль, Март, Апрель, Май, Июнь, Июль, Август, Сентябрь, Октябрь, Ноябрь, Декабрь ]
+    abbr_month_names: [ ~, Янв, Фев, Мар, Апр, Май, Июн, Июл, Авг, Сен, Окт, Ноя, Дек ]
+    day_names: [ Воскресенье, Понедельник, Вторник, Среда, Четверг, Пятница, Суббота ]
+    abbr_day_names: [ Вс, Пн, Вт, Ср, Чт, Пт, Сб ]
+  formats:
+    default: "%d %B %Y"
   time:
     formats:
-      commontator: "%d %b %Y в %H:%M %Z"
+      default: "%d %B %Y %H:%M:%S"
+  datetime:
+    formats:
+      default: "%d %B %Y %H:%M:%S"
